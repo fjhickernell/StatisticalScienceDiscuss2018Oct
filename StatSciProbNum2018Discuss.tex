@@ -24,6 +24,7 @@
 \DeclareMathOperator{\Var}{\mathbb{V}}
 \newcommand{\BOGOS}{\hyperlink{BriEtal18a}{BOGOS}\xspace}
 \newcommand{\JH}{\hyperlink{RatHic18a}{JH}\xspace}
+\newcommand{\vLambda}{\boldsymbol{\Lambda}}
 \endlocaldefs
 
 \begin{document}
@@ -37,7 +38,7 @@
 \begin{aug}
 \author{\fnms{Fred J.} \snm{Hickernell}\ead[label=e1]{hickernell@iit.edu} \ead[label=u1,url]{iit.edu/$\sim$hickernell}}
 \and
-\author{\fnms{R.} \snm{Jagadeeswaran}\ead[label=e2]{second@somewhere.com}}
+\author{\fnms{R.} \snm{Jagadeeswaran}\ead[label=e2]{jrathin1@hawk.iit.edu}}
 
 
 \runauthor{Fred J. Hickernell and R. Jagadeeswaran}
@@ -49,63 +50,58 @@
 
 \end{aug}
 
-\begin{abstract}
-The abstract should summarize the contents of the paper.
-It should be clear, descriptive, self-explanatory and not longer
-than 200 words. It should also be suitable for publication in
-abstracting services. Please avoid using math formulas as much as possible.
+\begin{abstract} \textbf{Need to write this.}
 
-This is a sample input file.  Comparing it with the output it
-generates can show you how to produce a simple document of
-your own.
 \end{abstract}
 
 \begin{keyword}
-\kwd{sample}
-\kwd{\LaTeXe}
+\kwd{Bayesian}
+\kwd{fast algorithms}
+\kwd{quasi-Monte Carlo}
 \end{keyword}
 
 \end{frontmatter}
 
 \section{When to Stop?}
 
-In highlighting the possibilities of a probabilistic perspective on computation, the authors of \cite{BriEtal18a}, henceforth referred to as \BOGOS, have provided a useful criterion for stopping.  Numerical analysis gives us an upper bound on the approximation error expressed as a product of the roughness of the integrand and the quality of our sampling scheme.  Specifically, \BOGOS, Eq.\ (5) quotes the error bound
+In highlighting the possibilities of a probabilistic integration, the authors of \cite{BriEtal18a}, henceforth referred to as \BOGOS, have provided a useful stopping criterion.  Numerical analysis gives us an upper bound on the cubature error expressed as a product of the roughness of the integrand and the quality of our sampling scheme.  For example, \BOGOS, Eq.\ (5) quotes the error bound
 \begin{equation} \label{HJErrBd}
     \bigl \lvert \hat{\Pi}[f] - \Pi[f] \rvert \le \lVert f \rVert_{\calH} \lVert \mu(\hat{\pi}) - \mu(\pi) \rVert_{\calH},
 \end{equation}
-where the integrand, $f$, lies in a Hilbert space, $\ch$, $\Pi[f]$ denotes the integral of $f$ defined in terms of the probability measure $\pi$, and $\hat{\Pi}[f]$ denotes a cubature defined in terms of the discrete measure $\hat{\pi}$. The \emph{discrepancy} between $\pi$ and $\hat{\pi}$ is defined as $\lVert \mu(\hat{\pi}) - \mu(\pi) \rVert_{\calH}$. As the sample size, $n$, increases, one hopes that the discrepancy tends to zero.  Even if $\lVert \mu(\hat{\pi}) - \mu(\pi) \rVert_{\calH}$ can be computed efficiently, one typically does not have a good estimate or bound on $\lVert f \rVert_{\calH}$.  Therefore, it is impractical to use  \eqref{HJErrBd} to determine an $n$ that satisfies the error criterion
+where the integrand, $f$, lies in a Hilbert space, $\ch$, $\Pi[f]$ denotes the integral of $f$ defined in terms of the probability measure $\pi$, and $\hat{\Pi}[f]$ denotes a cubature defined in terms of the discrete measure $\hat{\pi}$. The \emph{discrepancy} between $\pi$ and $\hat{\pi}$ is defined as $\lVert \mu(\hat{\pi}) - \mu(\pi) \rVert_{\calH}$. As the sample size, $n$, increases, a well chosen discrete measure causes the discrepancy to tend to zero.  But, even if $\lVert \mu(\hat{\pi}) - \mu(\pi) \rVert_{\calH}$ can be computed efficiently, one typically does not have a good estimate or bound on $\lVert f \rVert_{\calH}$.  Therefore, it is impractical to use  \eqref{HJErrBd} to determine an $n$ that satisfies the error criterion
 \begin{equation} \label{HJErrCrit}
     \bigl \lvert \hat{\Pi}[f] - \Pi[f] \bigr \rvert \le \varepsilon,
 \end{equation}
-where $\varepsilon$ is the absolute error tolerance.  
+where $\varepsilon$ is the user-specfied absolute error tolerance.  
 
-We believe that the practitioner would benefit from an automatic cubature, that is an algorithm with a stopping criterion that guarantees \eqref{HJErrCrit} (with high probability).  The probabilistic numerics approach espoused in \BOGOS fulfills that wish.  
+We believe that the practitioner would like an automatic cubature, i.e., an algorithm with a stopping criterion that guarantees \eqref{HJErrCrit} (with high probability).  Probabilistic integration, as espoused in \BOGOS, fulfills that wish.  
 
-Bayesian cubature assumes that the integrand, $f$, may be modeled by a Gaussian stochastic process, $g \sim \calGP(0,c)$, conditioned on $g$ having the same values as $f$ does at the cubature nodes or states, $\{\vx_i\}_{i=1}^n$.  Thus, $\hat{\Pi}[g] = \hat{\Pi}[f]$, where Bayesian cubature is chosen to satisfy $\hat{\Pi}[g] = \Ex_n[\Pi[g]]$.  Here, $c$ is the covariance function for $g$.  The definition of $g$ allows us to construct credible intervals for the cubature error via Proposition 1 in  \cite{BriEtal18a}, namely
+Bayesian cubature, as explained in \BOGOS, assumes that the integrand, $f$, may be modeled by a Gaussian stochastic process, $g \sim \calGP(0,c)$, conditioned on $g$ having the same values as $f$ at the cubature nodes or states, $\{\vx_i\}_{i=1}^n$.  Thus, $\hat{\Pi}[g] = \hat{\Pi}[f]$.  Furthermore, Bayesian cubature is designed to satisfy $\hat{\Pi}[g] = \Ex_n[\Pi[g]]$.  Here, $c$ is the covariance function for $g$.  The definition of $g$ allows us to construct credible intervals for the cubature error via Proposition 1 in  \BOGOS, namely
 \begin{gather}
 \label{credInt}
     \Prob\Bigl[\bigl \lvert \hat{\Pi}[f] - \Pi[g] \bigr \rvert \le 2.58 \sqrt{\Var_n[\Pi[g]]}  \Bigr] = 99\%, \\
     \label{Vnform}
     \Var_n[\Pi[g]] = \Pi\Pi[c(\cdot,\cdot)]] - \Pi[\vc(\cdot,X)] \vC^{-1} \Pi[\vc(X,\cdot)].
 \end{gather}
-If the observed integrand, $f$, lies in the $99\%$ middle of the sample space for $g$, and not in the $1\%$ extreme, then increasing $n$ until $2.58 \sqrt{\Var_n[\Pi[g]]}$ is no greater than $\varepsilon$ ensures that  \eqref{HJErrCrit} with high probability.
+If the observed integrand, $f$, lies in the $99\%$ middle of the sample space for $g$, and not in the $1\%$ extreme, then increasing $n$ until $2.58 \sqrt{\Var_n[\Pi[g]]}$ is no greater than $\varepsilon$ ensures that  \eqref{HJErrCrit} holds with high probability.
 
-There are some practical obstacles to implementing this elegant recipe in practice. 
+There are some practical obstacles to implementing this elegant recipe. 
 
 \begin{itemize} 
 
-\item How does one choose the covariance function $c$?  While the sample space may be chosen large enough to include $f$, our use of the credible interval as a stopping criterion assumes that our integrand is not in the tails under the assumption of the chosen covariance function.  We discuss this question in the next section.  
+\item How does one choose the covariance function $c$?  While one may always choose the sample space large enough to include $f$, our use of the credible interval as a stopping criterion assumes that $f$ is not in the tails of the distribution $\calGP(0,c)$.  We discuss this question in the next section.  
 
-\item The computational cost of computing $\Var_n[\Pi[g]]$ involves matrix inversion, which requires $\mathcal{O}(n^3)$ operations in general.  This typically takes much more time than the $\mathcal{O}(n)$ operations required to compute the cubature, $\hat{\Pi}[f]$, obtaining an integrand value is quite time-consuming. We discuss how to circumvent this problem for matching kernels and cubature nodes in Section \ref{sec:Match}.
+\item The computational cost of computing $\Var_n[\Pi[g]]$ involves matrix inversion, which requires $\mathcal{O}(n^3)$ operations in general.  This typically takes much more time than the $\mathcal{O}(n)$ operations required to compute the cubature, $\hat{\Pi}[f]$, unless obtaining an integrand value is quite time-consuming. We discuss how to circumvent this problem by matching kernels and cubature nodes in Section \ref{sec:Match}.
 
 \end{itemize}
+There are both commonalities and differences in the deterministic and probabilistic approaches to numerical integration.  We discuss some of these in Section \ref{sec:ProbDet}.
 
 \section{Which Gaussian Process?} \label{sec:WhichGauss}
-As mentioned above, using a credible as a stopping criterion requires careful choice of the covariance kernel, $c$.  The width of the credible interval in \eqref{credInt} depends on $\Var_n[\Pi[g]]$ given by \eqref{Vnform}.  For example, multiplying $c$ by four doubles the width of the credible interval.  
+As mentioned above, using a credible as a stopping criterion requires careful choice of the covariance kernel, $c$.  The width of the credible interval in \eqref{credInt} depends on $\Var_n[\Pi[g]]$ given by \eqref{Vnform}.  At first glance, nothing in \eqref{Vnform} depends on the integrand data, $\vf = \bigl( f(\vx_i) \bigr)_{i=1}^n$, although our intuition tells us that it should.  The credible interval for the integral of $47f$ should be $47$ times as wide as the credible interval for the integral of $f$.  
 
-When constructing the confidence interval for the mean of a scalar random variable, $Y$, from independent and identically distributed (IID) data, one must estimate the variance of $Y$ by the sample variance. Analogously, when constructing the credible interval in \eqref{credInt} for the integral (mean) of a function, one must estimate the vertical scale factor inherent in $c$.
+When constructing the confidence interval for the mean of a scalar random variable, $Y$, from independent and identically distributed (IID) data, one must estimate the variance of $Y$ by the sample variance. Analogously, when constructing the credible interval in \eqref{credInt} for the integral (mean) of a function, one must estimate the vertical scale factor inherent in the covariance function $c$.
 
-We have recently explored the feasibility of Bayesian cubature as the basis for automatically selecting $n$ to satisfy the error criterion \eqref{HJErrCrit}  in \cite{RatHic19a}, henceforth abbreviated as \JH.  We choose the covariance kernel to take the form $c(\vx, \vx') =  \lambda c_0(\vx, \vx'; \vtheta)$, where $\lambda$ is the vertical scale factor, and $\vtheta$ is a parameter determining the smoothness and other properties of the kernel.  This approach is analogous to that in \cite[Proposition 2]{BriEtal18a}.  An example is  the following \cite[(36)]{RatHic19a}:
+We have recently explored the feasibility of Bayesian cubature as the basis for automatically selecting $n$ to satisfy the error criterion \eqref{HJErrCrit}  in \cite{RatHic19a}, henceforth abbreviated as \JH.  As in Proposition 2 of \BOGOS,  \JH chooses the covariance kernel to take the form $c(\vx, \vx') =  \lambda c_0(\vx, \vx'; \vtheta)$, where $\lambda$ is the vertical scale factor, and the parameter $\vtheta$ determines the smoothness and other properties of the kernel.  An example of $c_0$ is  the following (\JH (36)):
 \begin{multline}
 \label{the_kernel_eqn_bernoulli}
 c_0(\vx, \vx';\vtheta) =
@@ -113,31 +109,121 @@ c_0(\vx, \vx';\vtheta) =
 1 - (-1)^{r} \gamma B_{2r}( |{x_l-x'_l}| ) \biggr], \\  
 \forall \vx,\vx' \in [0,1]^d, \  \vtheta = (r,\gamma), \ r \in \naturals, \ \gamma > 0,
 \end{multline}
-where $B_{2r}$ is the Bernoulli polynomial of degree $2r$.  The smoothness of the covariance kernel increases with $r$.  To increase the possibility that our integrand $f$ lies in the middle of the sample space, we also allow the stochastic process $g$ to have an arbitrary mean, $m$, so $g \sim \calGP(m, \lambda c_0)$.  Assuming an improper prior on $m$ and $\lambda$, the posterior marginal for $\Pi[g]$ is  a Student-t distribution with mean and variance both depending on the integrand data, $\vf = \bigl( f(\vx_i) \bigr)_{i=1}^n$ \cite[(15), (16)]{RatHic19a}:
-\begin{align*}
-    \hat{\Pi}[f] & =  \Ex_n[\hat{\Pi}[f]] =
+where $B_{2r}$ is the Bernoulli polynomial of degree $2r$.  The smoothness of the covariance kernel increases with $r$.  Covariance functions of this form appear in  \cite{Hic96a,DicEtal14a}. Bernoulli polynomials are described in Chapter 24 of \cite{OlvEtal10a}.
+
+To increase the possibility that our integrand $f$ lies in the middle of the sample space, we also allow the stochastic process $g$ to have an arbitrary mean, $m$, so $g \sim \calGP(m, \lambda c_0)$.  One may imagine the situation of $f$ denoting an option payoff.  In this case, $f$ is non-negative and its mean is non-negative.  Assuming an improper prior on $(m, \lambda)$, the posterior marginal for $\Pi[g]$ is  a Student-t distribution with $n-1$ degrees of freedom and with mean and variance both depending on the integrand data, $\vf$ (\JH, (15--16)):
+\begin{subequations} \label{JHFullBayes}
+\begin{align}
+\label{eqn:BC}
+    \hat{\Pi}[f] & =  \Ex_n[\hat{\Pi}[g]] \\
+    \nonumber
+    & =
 \left(
 \frac{  (1 - \vone^T  \vC^{-1}_0\Pi[\vc_0(X,\cdot) ] \vone^T }{ \vone^T  \vC^{-1}_0 \vone}   +  \Pi[\vc_0(\cdot, X)]
 \right)  \vC^{-1}_0 \vf, \\
-\Var_n[\Pi[g]] & = \frac{1}{n}
- \vf^T \left[  \vC^{-1}_0 - 
-\frac{  \vC^{-1}_0 \vone \vone^T  \vC^{-1}_0 }{\vone^T  \vC^{-1}_0 \vone}
-\right] \vf \\
 \label{eqn:errMLE}
-&\qquad \qquad \times 
-\{\Pi\Pi[c_0(\cdot,\cdot)] - \Pi[\vc_0(\cdot, X)]\mC^{-1} \Pi[\vc_0(X,\cdot)] \},
-\end{align*}
-where $\vone$ is a vector of ones.  This is similar to the conclusion of Proposition 2 in \cite{BriEtal18a}.  
+\Var_n[\Pi[g]] & = \frac{1}{n}
+ \vf^T \left(  \vC^{-1}_0 - 
+\frac{  \vC^{-1}_0 \vone \vone^T  \vC^{-1}_0 }{\vone^T  \vC^{-1}_0 \vone}
+\right) \vf \\
+\nonumber
+&\qquad \qquad \times
+\left (
+\frac{(1 - \Pi[\vc_0(\cdot, X)]\vC_0^{-1} \vone)^2}{\vone^T  \vC^{-1}_0 \vone} \right . \\
+\nonumber & \qquad \qquad  +
+\Pi\Pi[c_0(\cdot,\cdot)] - \Pi[\vc_0(\cdot, X)]\vC_0^{-1} \Pi[\vc_0(X,\cdot)] 
+\biggr ), \\
+\lefteqn{\Prob\Bigl[\bigl \lvert \hat{\Pi}[f] - \Pi[g] \bigr \rvert \le t_{n-1,0.995} \sqrt{\Var_n[\Pi[g]]}  \Bigr] = 99\%,}
+\end{align}
+\end{subequations}
+where $\vone$ is a vector of ones, and $t_{n-1,0.995}$ denotes the $99.5\%$ quantile of the Student-t distribution with $n-1$ degrees of freedom.  For large $n$, $t_{n-1,0.995} \approx 2.58$.  The expressions in \eqref{JHFullBayes} are similar to the conclusion of \BOGOS, Proposition 2.  The differences are due to the mean of the Gaussian process being left unspecified, which reduces the degrees of freedom by one, and adds additional terms to the expressions for $\Ex_n[\hat{\Pi}[g]]$ and $\Var_n[\Pi[g]]$.
 
-One may place a discrete prior on the parameter $\vtheta$, but this seems to us to be too arbitrary.  Thus, in \cite{RatHic19a} we advocate estimating $\vtheta$ by \emph{empirical Bayes}.  Empirical Bayes is also an alternative to the assuming improper priors on $m$ and $\lambda$.  This alternative is discussed in \cite{RatHic19a}.  For this approach the posterior marginal for $\Pi[g]$ has the same mean as for the full Bayes approach, but the variance is a bit smaller.  
+Hidden in the definition of $c_0$ is the parameter $\vtheta$. One may place a discrete prior on $\vtheta$, but this strikes us as rather arbitrary.  Thus, in \JH we advocate estimating $\vtheta$ by \emph{empirical Bayes}, namely,
+\begin{equation} \label{thetaEB}
+    \vtheta_{\textup{EB}}
+= \argmin_{\vtheta} \biggl \{
+\log\left(\vf^T 
+\left[ \vC_0^{-1} - 
+\frac{ \vC_0^{-1} \vone \vone^T \vC_0^{-1} }{\vone^T \vC_0^{-1} \vone}
+\right] \vf 
+\right) +  \frac{1}{n} \log(\det(\vC_0))
+\biggr \}.
+\end{equation}  
 
-We also discuss the alternative of \emph{generalized cross-validation} for estimating the correct covariance kernel from the integrand data in \cite{RatHic19a}.  The formulas for the Bayesian cubature and the credible interval width are different than for full Bayes.
+\JH also presents empirical Bayes is as an alternative to assuming the improper prior on $(m,\lambda)$.  Under empirical Bayes the posterior marginal for $\Pi[g]$ has the same mean as for the full Bayes approach, but a bit smaller variance.  
+
+\JH also discusses the alternative of \emph{generalized cross-validation} for estimating the correct covariance kernel from the integrand data.  The formulas for the Bayesian cubature and the credible interval width are significantly different than for full Bayes.
 
 
+\section{Speeding Up the Computation} \label{sec:Match}
+Computing the estimate of $\vtheta$ in \eqref{thetaEB} and then the credible interval according to \eqref{JHFullBayes} involve matrix inversion and the computing a matrix determinant, which require as much as $\Order(n^3)$ operations.  On the other hand, the computational cost of a obtaining the integrand data, $\vf$, is $\Order(\$(f)n)$, where $\$(f)$ is the computational cost of  a single integrand value.
 
-\section{Speeding Up} \label{sec:Match}
+If $\$(f)$ is extraordinary large compared to the expected sample size $n$, then the cost of obtaining integrand data dominates, and the $\Order(n^3)$ cost of matrix operations is unimportant.  However, if $\$(f)$ is close to $\Order(1)$, then the cost of matrix operations may make Bayesian cubature prohibitively costly.
 
-\section{Bayesian Approach Versus Worst Case}
+\JH presents an scenario where the cost of matrix operations may be reduced to $\Order(n \log n)$ via fast transforms.  The key is choosing covariance functions and cubature nodes that match.  Let the matrix $\vC_0$ be decomposed in terms of its eigenvectors, which comprise the columns of $\vV$, and its eigenvalues, which comprise the diagonal elements of the diagonal matrix $\vLambda$:
+\begin{align}
+\nonumber
+\vC_0 &  = (\vC_1,...,\vC_n) 
+= \frac 1n \vV \vLambda \vV^H , 
+\quad \vV^H = n \vV^{-1}, \\
+\nonumber
+\vV &= (\vv_1,...,\vv_n)^T = (\vV_1,...,\vV_n).
+\end{align}
+Four assumptions are made regarding the kernel, $c_0$, and the cubature nodes, $\{\vx\}_{i=1}^n$ (\JH, (25, 27)):
+\begin{subequations} \label{fastcompAssump}
+	\begin{gather}
+	\label{fastcompAssumpA}
+	\vV \text{ may be identified analytically}, \\
+	\label{fastcompAssumpB}
+	\vv_1 = \vV_1 = \vone, \\
+	\label{fastcompAssumpC}
+	\tilde{\vb}:=\vV^H \vb  \text{ requires only $\Order(n \log(n))$ operations } \forall \vb, \\
+	\Pi[c_0(\cdot,\vx)] = 1 \qquad \forall \vx.
+	\end{gather}
+\end{subequations}
+Here, $\vV^H \vb$ is called the \emph{fast transform} of $\vb$ because it takes fewer than the typical $\Order(n^2)$ operations required for matrix-vector multiplication.
+
+An example of matching covariance functions and cubature nodes is 
+\begin{multline*}
+    \text{Shift invariant covariance functions, $c_0$, which satisfy}  \\ 
+    c_0(\vx, \vx') = \mathring{c}_o(\vx - \vx' \bmod \vone) \qquad \forall \vx, \vx' \in [0,1)^d,
+\end{multline*}
+for some $\mathring{c}_0$, and
+\begin{multline*}
+    \text{Shifted rank-1 integration lattice node sets, $\{\vx_i\}_{i=1}^n$, which satisfy} \\
+    \vx, \vx' , \vx'' \in \{\vx_i\}_{i=1}^n \implies \vx + \vx' - \vx'' \bmod \vone \in \{\vx_i\}_{i=1}^n. 
+\end{multline*}
+The covariance function in \eqref{the_kernel_eqn_bernoulli} is an example of a shift-invariant covariance function.  Figure \ref{fig:latfig} depicts a rank-1 integration node set.
+
+\begin{figure}
+    \centering
+    \includegraphics[width = 5cm]{ShiftedLatticePoints-eps-converted-to.pdf}
+    \caption{Caption}
+    \label{fig:latfig}
+\end{figure}
+
+Under these assumptions one may express \eqref{JHFullBayes} and \eqref{thetaEB} in terms of the fast transforms of the integrand data and the first column of the matrix $\vC_0$ (\JH, Sections 3.2, 3.3):
+\begin{subequations} \label{JHFullBayesFast}
+\begin{align}
+\label{FastTrans}
+\tvf & : = \vV^{H} \vf, \qquad \vlambda = \diag(\vLambda) = \tilde{\vC}_1 := \vV^{H} \vC_1, \\
+    \hat{\Pi}[f] & =  \Ex_n[\hat{\Pi}[g]] = \frac 1n \sum_{i=1}^n f(\vx_i) = \frac{\tf_1}{n} \qquad \text{the sample average},\\
+\Var_n[\Pi[g]] & = \frac{1}{n(n-1)} \left(\frac{\lambda_1}{n}  - 1  \right)\sum_{i=2}^n \frac{\bigl \lvert \tf_i\bigr \rvert^2}{\lambda_i} , \\
+\vtheta_{\textup{EB}} &= 
+\argmin_{\vtheta}
+\left[
+\log\left(
+\sum_{i=2}^n \frac{\abs{\widetilde{y}_i}^2}{\lambda_i}
+\right)  
+  + 
+\frac{1}{n}\sum_{i=1}^n \log(\lambda_i)
+\right].
+\end{align}
+\end{subequations}
+Apart from the computations in \eqref{FastTrans}, which require $\Order(n \log n)$ operations, all other calcuations in \eqref{JHFullBayesFast} require only $\Order(n)$ operations.
+
+
+\section{Probabilistic Versus Deterministic} \label{sec:ProbDet}
 
 
 \section{Hi}
