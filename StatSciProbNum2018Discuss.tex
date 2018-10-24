@@ -256,29 +256,31 @@ So setting $c$ identical to $k$ means that we are modeling an integrand with fin
 This seems counter-intuitive.  Nevertheless, there are tantalizing mathematical similarities between the probabilistic and deterministic approaches to cubature.
 
 When the optimal cubature weights are used, the deterministic error bound in \eqref{HJErrBd} may be expressed as
-\begin{subequations} \label{HJErrBdTight}
+%\begin{subequations}
 \begin{gather} 
     \label{HJErrbdTightCub}
     \hat{\Pi}[f] = \Pi[\hat{f}] = \Pi[\vk(\cdot, X)] \vK^{-1} \vf, \\
     \label{HJErrBdBdTight}
     \bigl \lvert \hat{\Pi}[f] - \Pi[f] \rvert^2 \le \lVert f - \hat{f}  \rVert_{\calH}^2 \ \bigl \{ \Pi\Pi[k(\cdot,\cdot)] - \Pi[\vk(\cdot, X)]\vK^{-1} \Pi[\vk(X,\cdot)]\bigr \} ,
 \end{gather}
-\end{subequations}
+%\end{subequations}
 where $\hat{f}$ is the minimum Hilbert space norm interpolant of the integrand, $f$.  The reason that $\lVert f \rVert_{\calH}$ in \eqref{HJErrBd} can be replaced by $\lVert f - \hat{f} \rVert_{\calH}$ is that the cubature in \eqref{HJErrbdTightCub} integrates $\hat{f}$ exactly. Moreover, $f - \hat{f}$ is orthogonal to $\hat{f}$ under the Hilbert space inner product.  Also note that
 \begin{equation} \label{HJErrBdTight}
    \lVert \hat{f}  \rVert^2_{\calH} = \vf^T \vK^{-1} \vf.
 \end{equation}
 
 Compare the error bound in \eqref{HJErrBdTight} to Proposition 2 of \BOGOS{}, which implies that 
-\begin{subequations} \label{HJBCErrBdTight}
+%\begin{subequations}
 \begin{gather} 
 \label{HJBCErrbdTightCub}
+\nonumber
     \hat{\Pi}[f] = \Ex[\Pi[g]] = \Pi[\vc_0(\cdot, X)] \vC_0^{-1} \vf , \\
+    \nonumber
     \Var[\Pi[g]] = \frac{\vf^T \vC_0^{-1} \vf}{n} \ \bigl \{ \Pi\Pi[c_0(\cdot,\cdot)] - \Pi[\vc_0(\cdot, X)]\vC_0^{-1} \Pi[\vc_0(X,\cdot)] \bigr \} , \\
     \label{HJBCErrBdBdTight}
     \Prob\bigl[ \bigl \lvert \hat{\Pi}[f] - \Pi[f] \rvert^2 \le t_{0.995,n}^2 \Var[\Pi[g]] \bigr] = 99\%
 \end{gather}
-\end{subequations}
+%\end{subequations}
 The formulas for the cubature $\hat{\Pi}[f]$ in both the deterministic and probabilistic senses are identical if $k$ is identical to $c_0$.  They are also independent of the vertical scale factor multiplying inherent in the definition of $k$ or $c_0$, i.e., the reproducing kernels $k$ and $47k$ yield the same cubature rule.  Likewise, the bound on the squared error in \eqref{HJErrBdBdTight} and the variance of the integral of the Gaussian process in \eqref{HJBCErrBdBdTight} both contain the common factor $\Pi\Pi[k(\cdot,\cdot)] - \Pi[\vk(\cdot, X)]\vK^{-1} \Pi[\vk(X,\cdot)]$ if $k$ is identical to $c_0$.
 
 Matching the deterministic error bound in \eqref{HJErrBdBdTight} to the probabilistic error bound in  \eqref{HJBCErrBdBdTight} when  $k$ is identical to $c_0$ becomes possible if one asserts that 
