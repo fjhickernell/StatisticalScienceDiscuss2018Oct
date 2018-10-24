@@ -111,7 +111,7 @@ c_0(\vx, \vx';\vtheta) =
 \end{multline}
 where $B_{2r}$ is the Bernoulli polynomial of degree $2r$.  The smoothness of the covariance kernel increases with $r$.  Covariance functions of this form appear in  \cite{Hic96a,DicEtal14a}. Bernoulli polynomials are described in Chapter 24 of \cite{OlvEtal10a}.
 
-To increase the possibility that our integrand $f$ lies in the middle of the sample space, we also allow the stochastic process $g$ to have an arbitrary mean, $m$, so $g \sim \calGP(m, \lambda c_0)$.  One may imagine the situation of $f$ denoting an option payoff.  In this case, $f$ is non-negative and its mean is non-negative.  Assuming an improper prior on $(m, \lambda)$, the posterior marginal for $\Pi[g]$ is  a Student-t distribution with $n-1$ degrees of freedom and with mean and variance both depending on the integrand data, $\vf$ (\JH, (15--16)):
+To increase the possibility that our integrand $f$ lies in the middle of the sample space, we also allow the Gaussian process $g$ to have an arbitrary mean, $m$, so $g \sim \calGP(m, \lambda c_0)$.  One may imagine the situation of $f$ denoting an option payoff.  In this case, $f$ is non-negative and its mean is non-negative.  Assuming an improper prior on $(m, \lambda)$, the posterior marginal for $\Pi[g]$ is  a Student-t distribution with $n-1$ degrees of freedom and with mean and variance both depending on the integrand data, $\vf$ (\JH, (15--16)):
 \begin{subequations} \label{JHFullBayes}
 \begin{align}
 \label{eqn:BC}
@@ -228,55 +228,68 @@ Section 5 of \JH presents the results of several numerical experiments for Bayes
 
 In this example, and others provided in Section 5 of \JH, the cost of evaluating the integrand is modest, and so the cost of obtaining the needed function data, $\vf$ is on the same order as the matrix-vector operations required to compute the credible interval.  \JH also provides examples of the empirical Bayes and generalized cross-validation approaches to determining the parameters inherent in the covariance function and to using credible intervals as stopping criteria for Bayesian cubature.  All of these approaches are successful, which suggests that they should be explored over a larger range of examples.  
 
-\section{Probabilistic Versus Deterministic} \label{sec:ProbDet}
+\section{Probabilistic Versus Deterministic Analysis} \label{sec:ProbDet}
 
-Section 3.2 in \BOGOS sets the covariance kernel, $c$, for the Gaussian process, $g$, identical to the reproducing kernel, $k$, of the Hilbert space containing the integrand, $f$ for ``aesthetic'' reasons.  While this makes the application of several results from numerical analysis of deterministic cubature more readily transferable to Bayesian cubature, we think that such a correspondence muddies the waters.  While there are mathematical similarities between the probabilistic and determinstic approaches to cubature, there are some important differences.  
+We return to the situation where the Gaussian process, $g$, has zero mean, as in \BOGOS.  Section 3.2 in \BOGOS sets the covariance function, $c$, identical to the reproducing kernel, $k$, of the Hilbert space containing the integrand, $f$ for ``aesthetic'' reasons.  While this makes the application of several results from numerical analysis of deterministic cubature more readily transferable to Bayesian cubature, we think that such a correspondence muddies the waters.  
+
+Suppose that $\{\phi_i\}_{i=1}^\infty$ is an orthonormal basis for the Hilbert space $\ch$ with reproducing kernel $k$.  Then 
+\begin{equation}
+    \label{kHS}
+    k(\vx,\vx') = \sum_{i=1}^\infty \phi_i(\vx) \phi_i(\vx').
+\end{equation}
+Moreover, the norm of any $f = \sum_{i=1}^n a_i \phi_i \in \ch$ is $\norm[\ch]{f} = \norm[2]{\va}$.  If $g = \sum_{i=1}^\infty A_i \phi_i$, with $A_i \IIDsim \cn(0,1)$, then $g \in \calGP(0,c)$, where $c$ is identical to $k$ as defined in \eqref{kHS}.  While this may seem well and good, note that 
+\[
+\Ex(\norm[\ch]{g}^2) = \Ex(\norm[2]{\vA}^2) = \norm[2]{(1,1, \ldots) }^2 = \infty.
+\]
+
+So setting $c$ identical to $k$ means that we are modeling an integrand with finite norm buy a Gaussian process with an infinite expected squared norm.
+This seems counter-intuitive.  Nevertheless, there are tantalizing mathematical similarities between the probabilistic and deterministic approaches to cubature.
 
 When the optimal cubature weights are used, the deterministic error bound in \eqref{HJErrBd} may be expressed as
 \begin{subequations} \label{HJErrBdTight}
 \begin{gather} 
-    \label{HJErrBdBdTight}
-    \bigl \lvert \hat{\Pi}[f] - \Pi[f] \rvert^2 \le \lVert f - S(f) \rVert_{\calH}^2 \ \bigl \{ \Pi\Pi[k(\cdot,\cdot)] - \Pi[\vk(\cdot, X)]\vK^{-1} \Pi[\vk(X,\cdot)]\bigr \} , \\
     \label{HJErrbdTightCub}
-    \text{where } \hat{\Pi}[f] = \Pi[S(f)] = \Pi[\vk(\cdot, X)] \vK^{-1} \vf,
+    \hat{\Pi}[f] = \Pi[\hat{f}] = \Pi[\vk(\cdot, X)] \vK^{-1} \vf, \\
+    \label{HJErrBdBdTight}
+    \bigl \lvert \hat{\Pi}[f] - \Pi[f] \rvert^2 \le \lVert f - \hat{f}  \rVert_{\calH}^2 \ \bigl \{ \Pi\Pi[k(\cdot,\cdot)] - \Pi[\vk(\cdot, X)]\vK^{-1} \Pi[\vk(X,\cdot)]\bigr \} ,
 \end{gather}
 \end{subequations}
-and $S(f)$ is the minimum Hilbert space norm interpolant of the integrand, $f$.  The reason that $\lVert f \rVert_{\calH}$ in \eqref{HJErrBd} can be replaced by $\lVert f - S(f) \rVert_{\calH}$ is that the cubature in \eqref{HJErrbdTightCub} integrates $S(f)$ exactly. Moreover, $f - S(f)$ is orthogonal to $S(f)$ with respect to the the Hilbert space inner product.  Also note that
+where $\hat{f}$ is the minimum Hilbert space norm interpolant of the integrand, $f$.  The reason that $\lVert f \rVert_{\calH}$ in \eqref{HJErrBd} can be replaced by $\lVert f - \hat{f} \rVert_{\calH}$ is that the cubature in \eqref{HJErrbdTightCub} integrates $\hat{f}$ exactly. Moreover, $f - \hat{f}$ is orthogonal to $\hat{f}$ under the the Hilbert space inner product.  Also note that
 \begin{equation} \label{HJErrBdTight}
-   \lVert S(f) \rVert^2_{\calH} = \vf^T \vK^{-1} \vf.
+   \lVert \hat{f}  \rVert^2_{\calH} = \vf^T \vK^{-1} \vf.
 \end{equation}
 
-Compare this to Proposition 2 of \BOGOS, which states that 
+Compare the error bound in \eqref{HJErrBdTight} to Proposition 2 of \BOGOS, which implies that 
 \begin{subequations} \label{HJBCErrBdTight}
 \begin{gather} 
 \label{HJBCErrbdTightCub}
     \hat{\Pi}[f] = \Ex[\Pi[g]] = \Pi[\vc_0(\cdot, X)] \vC_0^{-1} \vf , \\
-    \label{HJBCErrBdBdTight}
     \Var[\Pi[g]] = \frac{\vf^T \vC_0^{-1} \vf}{n} \ \bigl \{ \Pi\Pi[c_0(\cdot,\cdot)] - \Pi[\vc_0(\cdot, X)]\vC_0^{-1} \Pi[\vc_0(X,\cdot)] \bigr \} , \\
-    \text{where } \hat{\Pi}[f] = \Pi[S(f)] = \Pi[\vk(\cdot, X)] \vK^{-1} \vf,
+    \label{HJBCErrBdBdTight}
+    \Prob\bigl[ \bigl \lvert \hat{\Pi}[f] - \Pi[f] \rvert^2 \le t_{0.995,n}^2 \Var[\Pi[g]] \bigr] = 99\%
 \end{gather}
 \end{subequations}
-The formulas for the cubature $\hat{\Pi}[f]$ in both the deterministic and probabilistic senses are identical if $k$ is identical to $c_0$.  They are also independent of the vertical scale factor multiplying inherent in the definition of $k$ or $c_0$, i.e., the reproducing kernel $k$ and $47k$ yield the same cubature rule.  Likewise, the bound on the squared error in \eqref{HJErrBdBdTight} and the variance of the integral of the stochastic process in \eqref{HJBCErrBdBdTight} both contain a common factor if $k$ is identical to $c_0$.
+The formulas for the cubature $\hat{\Pi}[f]$ in both the deterministic and probabilistic senses are identical if $k$ is identical to $c_0$.  They are also independent of the vertical scale factor multiplying inherent in the definition of $k$ or $c_0$, i.e., the reproducing kernels $k$ and $47k$ yield the same cubature rule.  Likewise, the bound on the squared error in \eqref{HJErrBdBdTight} and the variance of the integral of the Gaussian process in \eqref{HJBCErrBdBdTight} both contain the common factor $\Pi\Pi[k(\cdot,\cdot)] - \Pi[\vk(\cdot, X)]\vK^{-1} \Pi[\vk(X,\cdot)]$ if $k$ is identical to $c_0$.
 
-
-Add some more and more
-
-
-The sample space for the integrand, $f$, and the Gaussian process used to model the integrand, $g$, need not be directly tied to the 
+A full correspondence between the deterministic error bound in \eqref{HJErrBdBdTight} and the probabilistic error bound in  \eqref{HJBCErrBdBdTight} when  $k$ is identical to $c_0$ becomes possible if one asserts that 
+\begin{equation}
+\label{deterasprob}
+\lVert f - \hat{f} \rVert_{\calH}^2 \le \frac{ t_{0.995,n}^2 \lVert \hat{f} \rVert^2_{\calH}}{n} = \frac{t_{0.995,n}^2 \vf^T \vK^{-1} \vf}{n}.
+\end{equation}
+Although this inequality is violated for some $f \in ch$, it holds for $f \in \ch$ with a vanishing part not modeled by the minimum norm interpolant, $\hat{f}$.  Thus, one can mimic the probabilistic approach via a deterministic perspective if one assumes that the integrand satisfies the inequality in \eqref{deterasprob}.
 
 
 \section{Further remarks}
 
+There are a couple of matters that deserve further investigation.  How large a family of covariance functions must be considered for effective Bayesian cubature?  A larger family increases the probability that the integrand in question lies in the middle of the space of Gaussian processes used to determine the stopping criterion for Bayesian cubature.  On the other hand, a larger family often requires a more tedious choice of the parameters defining the family.
 
-For one-dimensional integration, the standard quadrature algorithms, e.g., in MATLAB \citep{MAT9.5}, expect an input of $\varepsilon$ and adaptively determine the sample size, $n$, required.
+The probabilistic approach to numerical integration assumes a Gaussian process.  So goodness-of-fit statistics confirm or discredit this assumption?  How does this affect the accuracy of the proposed Bayesian automatic cubature?
 
 
 
 
 \section*{Acknowledgements}
-And this is an acknowledgements section with a heading that was produced by the
-$\backslash$section* command. Thank you all for helping me writing this
-\LaTeX\ sample file.
+We thank the authors of \BOGOS for a provocative article and for urging the computational mathematics community to investigate more carefully probabilistic approaches.  This work was supported in part by NSF-DMS-1522687 and DMS-1638521 (SAMSI).
 
 \bibliographystyle{imsart-nameyear}
 \bibliography{FJH23,FJHown23}
