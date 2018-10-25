@@ -53,7 +53,7 @@
 \end{aug}
 
 \begin{abstract} 
-Probabilistic integration provides a criterion for stopping a simulation when a specified error tolerance is satisfied with high confidence.  We comment on some of the important philosophical and implementation issues involved in designing an automatic Bayesian cubature.
+Probabilistic integration provides a criterion for stopping a simulation when a specified error tolerance is satisfied with high confidence.  We comment on some of the modeling assumptions and implementation issues involved in designing an automatic Bayesian cubature.
 \end{abstract}
 
 \begin{keyword}
@@ -66,7 +66,7 @@ Probabilistic integration provides a criterion for stopping a simulation when a 
 
 \section{When to Stop?}
 
-In highlighting the possibilities of a probabilistic integration, the authors of \cite{BriEtal18a}, henceforth abbreviated as \BOGOS{}, have suggested a useful stopping criterion.  Numerical analysis provides an upper bound on the cubature error expressed as a product of the roughness of the integrand and the quality of our sampling scheme.  For example, \BOGOS{} (5) quotes the error bound
+In highlighting the possibilities of probabilistic integration, the authors of \cite{BriEtal18a}, henceforth abbreviated as \BOGOS{}, have suggested a useful stopping criterion for cubature.  Numerical analysis provides an upper bound on the cubature error expressed as a product of the roughness of the integrand and the quality of our sampling scheme.  For example, \BOGOS{} (5) quotes the error bound
 \begin{equation} \label{HJErrBd}
     \bigl \lvert \hat{\Pi}[f] - \Pi[f] \rvert \le \lVert f \rVert_{\calH} \lVert \mu(\hat{\pi}) - \mu(\pi) \rVert_{\calH},
 \end{equation}
@@ -84,7 +84,7 @@ But, even if $\lVert \mu(\hat{\pi}) - \mu(\pi) \rVert_{\calH}$ can be computed e
 \end{equation}
 where $\varepsilon$ is the user-specfied absolute error tolerance.  
 
-We believe that the practitioner would like an automatic cubature, i.e., an algorithm with a stopping criterion that guarantees \eqref{HJErrCrit} (with high probability).  Probabilistic integration, as espoused in \BOGOS{}, fulfills that wish.  
+We believe that the practitioner would like an automatic cubature, i.e., an algorithm with a stopping criterion that guarantees \eqref{HJErrCrit} (with high probability).  Probabilistic integration, and in particular Bayesian cubature, as espoused in \BOGOS{}, fulfills that wish.  
 
 Bayesian cubature, as explained in \BOGOS{}, assumes that the integrand, $f$, may be modeled by a Gaussian stochastic process, $g \sim \calGP(0,c)$, conditioned on $g$ having the same values as $f$ at the cubature nodes or states, $\{\vx_i\}_{i=1}^n$.  Thus, $\hat{\Pi}[g] = \hat{\Pi}[f]$.  Furthermore, Bayesian cubature is designed to satisfy $\hat{\Pi}[g] = \Ex_n[\Pi[g]]$.  Here, $c$ is the covariance function (or kernel) for $g$.  The definition of $g$ allows us to construct credible intervals for the cubature error via Proposition 1 in  \BOGOS{}, namely
 \begin{gather}
@@ -104,7 +104,7 @@ There are some practical obstacles to implementing this elegant recipe.
 \item The computational cost of computing $\Var_n[\Pi[g]]$ involves matrix inversion, which requires $\mathcal{O}(n^3)$ operations in general.  This typically takes much more time than the $\mathcal{O}(n)$ operations required to compute the cubature, $\hat{\Pi}[f]$, unless obtaining an integrand value is quite time-consuming. We discuss how to circumvent this problem by matching covariance functions and cubature nodes in Section \ref{sec:Match}.
 
 \end{itemize}
-There are commonalities and differences in the deterministic and probabilistic approaches to numerical integration.  We discuss some of these in Section \ref{sec:ProbDet}.
+There are commonalities and differences in the deterministic and Bayesian approaches to numerical integration.  We discuss some of these in Section \ref{sec:ProbDet}.
 
 \section{Which Gaussian Process?} \label{sec:WhichGauss}
 As mentioned above, using a credible interval as a stopping criterion requires careful choice of the covariance function, $c$.  The width of the credible interval in \eqref{credInt} depends on $\Var_n[\Pi[g]]$ given by \eqref{Vnform}.  At first glance, nothing in \eqref{Vnform} depends on the integrand data, $\vf = \bigl( f(\vx_i) \bigr)_{i=1}^n$, although our intuition tells us that it should.  The credible interval for the integral of $47f$ should be $47$ times as wide as the credible interval for the integral of $f$.  
@@ -161,9 +161,9 @@ Hidden in the definition of $c_0$ is the parameter $\vtheta$. One may place a di
 \biggr \}.
 \end{equation}  
 
-\JH{} also presents empirical Bayes as an alternative to assuming the improper prior on $(m,\lambda)$.  Under empirical Bayes the posterior marginal for $\Pi[g]$ has the same mean as for the full Bayes approach, but a somewhat smaller variance.  
+\JH{} also presents empirical Bayes as an alternative to assuming the improper prior on $(m,\lambda)$, as discussed in \BOGOS{} Section 4.1.3.  Under empirical Bayes the posterior marginal for $\Pi[g]$ has the same mean as for the full Bayes approach, but a somewhat smaller variance.  
 
-\JH{} also discusses the alternative of \emph{generalized cross-validation} for estimating the correct covariance function from the integrand data.  The formulas for the Bayesian cubature and the credible interval width are significantly different than for full Bayes.
+\JH{} also discusses the alternative of \emph{generalized cross-validation} for estimating the correct covariance function from the integrand data, as alluded to in Section 4.1.2 of \BOGOS{}.  The formulas for the Bayesian cubature and the credible interval width are significantly different than for full Bayes.
 
 
 \section{Speeding Up the Computation} \label{sec:Match}
@@ -196,12 +196,12 @@ Here, $\vV^H \vb$ is called the \emph{fast transform} of $\vb$ because it takes 
 
 An example of matching covariance functions and cubature nodes is 
 \begin{multline*}
-    \text{Shift-invariant covariance functions, $c_0$, which satisfy}  \\ 
+    \bullet \text{ Shift-invariant covariance functions, $c_0$, which satisfy}  \\ 
     c_0(\vx, \vx') = \mathring{c}_o(\vx - \vx' \bmod \vone) \qquad \forall \vx, \vx' \in [0,1)^d,
 \end{multline*}
-for some $\mathring{c}_0$, and
+for some $\mathring{c}_0$ with period $1$ in each coordinate direction, and
 \begin{multline*}
-    \text{Shifted rank-1 integration lattice node sets, $\{\vx_i\}_{i=1}^n$, which satisfy} \\
+    \bullet \text{ Shifted rank-1 integration lattice node sets, $\{\vx_i\}_{i=1}^n$, which satisfy} \\
     \vx, \vx' , \vx'' \in \{\vx_i\}_{i=1}^n \implies \vx + \vx' - \vx'' \bmod \vone \in \{\vx_i\}_{i=1}^n. 
 \end{multline*}
 The covariance function in \eqref{the_kernel_eqn_bernoulli} is an example of a shift-invariant covariance function \citep{Hic98b}.  Figure \ref{fig:latfig} (left) depicts a rank-1 integration node set \cite{SloJoe94,DicEtal14a}.  The reason that this family of covariance functions matches this family of cubature nodes and satisfies assumptions \eqref{fastcompAssump} is that the matrix $\vC_0$ is circulant and $\vV$ may be written in terms of complex exponentials.
@@ -218,7 +218,7 @@ Under assumptions \eqref{fastcompAssump} one may express \eqref{JHFullBayes} and
 \begin{align}
 \label{FastTrans}
 \tvf & : = \vV^{H} \vf, \qquad \vlambda = \diag(\vLambda) = \tilde{\vC}_1 := \vV^{H} \vC_1, \\
-    \hat{\Pi}[f] & =  \Ex_n[\hat{\Pi}[g]] = \frac 1n \sum_{i=1}^n f(\vx_i) = \frac{\tf_1}{n} \qquad \text{the sample average},\\
+    \hat{\Pi}[f] & =  \Ex_n[\Pi[g]] = \frac 1n \sum_{i=1}^n f(\vx_i) = \frac{\tf_1}{n} \qquad \text{the sample average},\\
 \Var_n[\Pi[g]] & = \frac{1}{n(n-1)} \left(\frac{\lambda_1}{n}  - 1  \right)\sum_{i=2}^n \frac{\bigl \lvert \tf_i\bigr \rvert^2}{\lambda_i} , \\
 \label{thetaEBfast}
 \vtheta_{\textup{EB}} &= 
@@ -234,11 +234,11 @@ Under assumptions \eqref{fastcompAssump} one may express \eqref{JHFullBayes} and
 \end{subequations}
 Apart from the computations in \eqref{FastTrans}, which require $\Order(n \log n)$ operations, all other calcuations in \eqref{JHFullBayesFast} require only $\Order(n)$ operations.  The expression for $\Var_n[\Pi[g]]$ excludes $i=1$ in the sum because we allow $g$ to have an arbitrary constant mean.
 
-Section 5 of \JH{} presents several numerical experiments for Bayesian cubature with shift-invariant covariance functions and lattice nodes sets.  We reproduce one such experiment in Figure \ref{fig:latfig} (right).  The integrand is the payoff of an arithmetic mean Asian option.  The covariance function is the one given by \eqref{the_kernel_eqn_bernoulli} with $r=1$.  A low degree of smoothness seems is chosen in view of the discontinuities in the partial derivatives of the integrand.  The value of $\gamma$ is determined by empirical Bayes as in \eqref{thetaEBfast}.  The sample size, $n$, is increased in a sequence of powers of $2$ until the stopping criterion implied by \eqref{BCFullStop}, whose terms are computed quickly via \eqref{JHFullBayesFast}, is satisfied.  Four different values of the tolerance were tried, $\varepsilon = 0.1, 0.01, 0.001,$ and $0.0001$. The aim is for the cubature error, $|\Pi[f] - \hat{\Pi}[f]|$, to be no greater than, but not too much less than, the prescribed tolerance nearly all the time.  In this experiment, the error tolerance is always met.  As expected, the computation time increases as the tolerance decreases.  
+Section 5 of \JH{} presents several numerical experiments for Bayesian cubature with shift-invariant covariance functions and lattice nodes sets.  We reproduce one such experiment in Figure \ref{fig:latfig} (right).  The integrand is the payoff of an arithmetic mean Asian option.  The covariance function is the one given by \eqref{the_kernel_eqn_bernoulli} with $r=1$.  A low degree of smoothness is chosen in view of the discontinuities in the partial derivatives of the integrand.  The value of $\gamma$ is determined by empirical Bayes as in \eqref{thetaEBfast}.  The sample size, $n$, is increased in a sequence of powers of $2$ until the stopping criterion implied by \eqref{BCFullStop}, whose terms are computed quickly via \eqref{JHFullBayesFast}, is satisfied.  Four different values of the tolerance were tried, $\varepsilon = 0.1, 0.01, 0.001,$ and $0.0001$. The aim is for the cubature error, $|\Pi[f] - \hat{\Pi}[f]|$, to be no greater than, but not too much less than, the prescribed tolerance nearly all the time.  In this experiment, the error tolerance is always met.  As expected, the computation time increases as the tolerance decreases.  
 
-In this example, and others provided in Section 5 of \JH{}, the cost of evaluating the integrand is modest, and so the cost of obtaining the needed integrand data, $\vf$ is on the same order as the matrix-vector operations required to compute the credible interval.  \JH{} also provides examples of the empirical Bayes and generalized cross-validation approaches to determining the parameters inherent in the covariance function and to using credible intervals as stopping criteria for Bayesian cubature.  All of these approaches are successful, which suggests that they should be explored over a larger range of examples.  
+In this example, and others provided in Section 5 of \JH{}, the cost of evaluating the integrand is modest, and so the cost of obtaining the needed integrand data, $\vf$, is on the same order as the matrix-vector operations required to compute the credible interval.  \JH{} also provides examples of the empirical Bayes and generalized cross-validation approaches to determining the parameters inherent in the covariance function and to using credible intervals as stopping criteria for Bayesian cubature.  All of these approaches are successful, which suggests that they should be explored over a larger range of examples.  
 
-\section{Probabilistic Versus Deterministic Analysis} \label{sec:ProbDet}
+\section{Bayesian Versus Deterministic Analysis} \label{sec:ProbDet}
 
 We return to the situation where the Gaussian process, $g$, has zero mean.  Section 3.2 in \BOGOS{} sets the covariance function, $c$, identical to the reproducing kernel, $k$, of the Hilbert space containing the integrand, $f$, for ``aesthetic'' reasons.  While this makes the application of several results from numerical analysis of deterministic cubature more readily transferable to Bayesian cubature, we think that such a correspondence muddies the waters.  
 
@@ -252,52 +252,51 @@ Moreover, the norm of any $f = \sum_{i=1}^n a_i \phi_i \in \ch$ is $\norm[\ch]{f
 \Ex(\norm[\ch]{g}^2) = \Ex(\norm[2]{\vA}^2) = \norm[2]{(1,1, \ldots) }^2 = \infty.
 \]
 
-So setting $c$ identical to $k$ means that we are modeling an integrand with finite norm buy a Gaussian process with an infinite expected squared norm.
-This seems counter-intuitive.  Nevertheless, there are tantalizing mathematical similarities between the probabilistic and deterministic approaches to cubature.
+So setting $c$ identical to $k$ means that we are modeling an integrand with finite norm by a Gaussian process with an infinite expected squared norm.
+This seems counter-intuitive.  Nevertheless, there are tantalizing mathematical similarities between the Bayesian and deterministic approaches to cubature.
 
 When the optimal cubature weights are used, the deterministic error bound in \eqref{HJErrBd} may be expressed as
-%\begin{subequations}
+\begin{subequations} \label{HJErrBdTight}
 \begin{gather} 
     \label{HJErrbdTightCub}
     \hat{\Pi}[f] = \Pi[\hat{f}] = \Pi[\vk(\cdot, X)] \vK^{-1} \vf, \\
     \label{HJErrBdBdTight}
     \bigl \lvert \hat{\Pi}[f] - \Pi[f] \rvert^2 \le \lVert f - \hat{f}  \rVert_{\calH}^2 \ \bigl \{ \Pi\Pi[k(\cdot,\cdot)] - \Pi[\vk(\cdot, X)]\vK^{-1} \Pi[\vk(X,\cdot)]\bigr \} ,
 \end{gather}
-%\end{subequations}
+\end{subequations}
 where $\hat{f}$ is the minimum Hilbert space norm interpolant of the integrand, $f$.  The reason that $\lVert f \rVert_{\calH}$ in \eqref{HJErrBd} can be replaced by $\lVert f - \hat{f} \rVert_{\calH}$ is that the cubature in \eqref{HJErrbdTightCub} integrates $\hat{f}$ exactly. Moreover, $f - \hat{f}$ is orthogonal to $\hat{f}$ under the Hilbert space inner product.  Also note that
-\begin{equation} \label{HJErrBdTight}
+\begin{equation} \label{splinenorm}
    \lVert \hat{f}  \rVert^2_{\calH} = \vf^T \vK^{-1} \vf.
 \end{equation}
 
+
 Compare the error bound in \eqref{HJErrBdTight} to Proposition 2 of \BOGOS{}, which implies that 
-%\begin{subequations}
+\begin{subequations} \label{HJBCErrBdTight}
 \begin{gather} 
 \label{HJBCErrbdTightCub}
-\nonumber
     \hat{\Pi}[f] = \Ex[\Pi[g]] = \Pi[\vc_0(\cdot, X)] \vC_0^{-1} \vf , \\
-    \nonumber
     \Var[\Pi[g]] = \frac{\vf^T \vC_0^{-1} \vf}{n} \ \bigl \{ \Pi\Pi[c_0(\cdot,\cdot)] - \Pi[\vc_0(\cdot, X)]\vC_0^{-1} \Pi[\vc_0(X,\cdot)] \bigr \} , \\
     \label{HJBCErrBdBdTight}
-    \Prob\bigl[ \bigl \lvert \hat{\Pi}[f] - \Pi[f] \rvert^2 \le t_{0.995,n}^2 \Var[\Pi[g]] \bigr] = 99\%
+    \Prob\bigl[ \bigl \lvert \hat{\Pi}[f] - \Pi[f] \rvert^2 \le t_{0.995,n}^2 \Var[\Pi[g]] \bigr] = 99\%.
 \end{gather}
-%\end{subequations}
-The formulas for the cubature $\hat{\Pi}[f]$ in both the deterministic and probabilistic senses are identical if $k$ is identical to $c_0$.  They are also independent of the vertical scale factor multiplying inherent in the definition of $k$ or $c_0$, i.e., the reproducing kernels $k$ and $47k$ yield the same cubature rule.  Likewise, the bound on the squared error in \eqref{HJErrBdBdTight} and the variance of the integral of the Gaussian process in \eqref{HJBCErrBdBdTight} both contain the common factor $\Pi\Pi[k(\cdot,\cdot)] - \Pi[\vk(\cdot, X)]\vK^{-1} \Pi[\vk(X,\cdot)]$ if $k$ is identical to $c_0$.
+\end{subequations}
+The formulas for the cubature $\hat{\Pi}[f]$ in both the deterministic and Bayesian senses are identical if $k$ is identical to $c_0$.  They are also independent of the vertical scale factor multiplying inherent in the definition of $k$ or $c_0$, i.e., the reproducing kernels $k$ and $47k$ yield the same cubature rule.  Likewise, the bound on the squared error in \eqref{HJErrBdBdTight} and the variance of the integral of the Gaussian process in \eqref{HJBCErrBdBdTight} both contain the common factor $\Pi\Pi[k(\cdot,\cdot)] - \Pi[\vk(\cdot, X)]\vK^{-1} \Pi[\vk(X,\cdot)]$ if $k$ is identical to $c_0$.
 
-Matching the deterministic error bound in \eqref{HJErrBdBdTight} to the probabilistic error bound in  \eqref{HJBCErrBdBdTight} when  $k$ is identical to $c_0$ becomes possible if one asserts that 
+Matching the deterministic error bound in \eqref{HJErrBdTight} to the Bayesian credible interval in  \eqref{HJBCErrBdTight} when  $k$ is identical to $c_0$ becomes possible if one applies \eqref{splinenorm} and asserts that 
 \begin{equation}
 \label{deterasprob}
 \lVert f - \hat{f} \rVert_{\calH}^2 \le \frac{ t_{0.995,n}^2 \lVert \hat{f} \rVert^2_{\calH}}{n} = \frac{t_{0.995,n}^2 \vf^T \vK^{-1} \vf}{n}.
 \end{equation}
-Although this inequality is violated for some $f \in \ch$, it holds for those $f \in \ch$ that are well-modeled by their minimum norm interpolants, $\hat{f}$.  Thus, one can mimic probabilistic integration via a deterministic integration which assumes that the integrand satisfies inequality \eqref{deterasprob}.
+Although this inequality is violated for some $f \in \ch$, it holds for those $f \in \ch$ that are well-modeled by their minimum norm interpolants, $\hat{f}$.  Thus, one can mimic Bayesian cubature via a deterministic cubature which assumes that the integrand satisfies inequality \eqref{deterasprob}.
 
 
 \section{Further Matters}
 
 A couple of matters deserve further investigation.  How large a family of covariance functions must be considered for effective Bayesian cubature?  A larger family increases the probability that the integrand in question lies in the middle of the space of Gaussian processes used to determine the stopping criterion.  On the other hand, a larger family may require a more tedious choice of the underlying parameters $\vtheta$.
 
-The probabilistic approach to numerical integration assumes a Gaussian process.  Do goodness-of-fit statistics confirm or discredit this assumption?  How does the validity of this assumption affect the reliability of the proposed Bayesian automatic cubature?
+The Bayesian approach to numerical integration assumes a Gaussian process.  Do goodness-of-fit statistics confirm or discredit this assumption?  How does the validity of this assumption affect the reliability of the proposed Bayesian automatic cubature?
 
-Finally, probabilistic numerics---including probabilistic integration---deserves further participation from statisticians, numerical analysts, and software developers alike.  Statisticians and numerical analysts should become more conversant in each other's language and culture.  Computational problems are better understood when one can look from multiple perspectives.  Moreover, the algorithms that arise from probabilistic numerics should find their way into commonly used software libraries.  Such libraries should be built using  software engineering principles that are familiar to software developers, but perhaps not obvious to statisticians.
+Finally, probabilistic numerics---including Bayesian cubature---deserves further participation from statisticians, numerical analysts, and software developers alike.  Statisticians and numerical analysts should become more conversant in each other's language and culture.  Computational problems are better understood when one can look from multiple perspectives.  Moreover, the algorithms that arise from probabilistic numerics should find their way into commonly used software libraries.  Such libraries should be built using  software engineering principles that are familiar to software developers, but perhaps not obvious to statisticians.
 
 
 
