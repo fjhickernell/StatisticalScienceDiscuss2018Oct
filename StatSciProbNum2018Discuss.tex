@@ -91,7 +91,7 @@ Bayesian cubature, as explained in \BOGOS{}, assumes that the integrand, $f$, ma
 \label{credInt}
     \Prob\Bigl[\bigl \lvert \hat{\Pi}[f] - \Pi[g] \bigr \rvert \le 2.58 \sqrt{\Var_n[\Pi[g]]}  \Bigr] = 99\%, \\
     \label{Vnform}
-    \Var_n[\Pi[g]] = \Pi\Pi[c(\cdot,\cdot)]] - \Pi[\vc(\cdot,X)] \vC^{-1} \Pi[\vc(X,\cdot)].
+    \Var_n[\Pi[g]] = \Pi\Pi[c(\cdot,\cdot)] - \Pi[\vc(\cdot,X)] \vC^{-1} \Pi[\vc(X,\cdot)].
 \end{gather}
 If the observed integrand, $f$, lies in the $99\%$ middle of the sample space for $g$, and not in the $1\%$ extreme, then increasing $n$ until $2.58 \sqrt{\Var_n[\Pi[g]]}$ is no greater than $\varepsilon$ ensures that  \eqref{HJErrCrit} holds with high probability.
 
@@ -106,8 +106,9 @@ There are some practical obstacles to implementing this elegant recipe.
 \end{itemize}
 There are commonalities and differences in the deterministic and Bayesian approaches to numerical integration.  We discuss some of these in Section \ref{sec:ProbDet}.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Which Gaussian Process?} \label{sec:WhichGauss}
-As mentioned above, using a credible interval as a stopping criterion requires careful choice of the covariance function, $c$.  The width of the credible interval in \eqref{credInt} depends on $\Var_n[\Pi[g]]$ given by \eqref{Vnform}.  At first glance, nothing in \eqref{Vnform} depends on the integrand data, $\vf = \bigl( f(\vx_i) \bigr)_{i=1}^n$, although our intuition tells us that it should.  The credible interval for the integral of $47f$ should be $47$ times as wide as the credible interval for the integral of $f$.  
+As mentioned above, using a credible interval as a stopping criterion requires a careful choice of the covariance function, $c$.  The width of the credible interval in \eqref{credInt} depends on $\Var_n[\Pi[g]]$ given by \eqref{Vnform}.  At first glance, nothing in \eqref{Vnform} depends on the integrand data, $\vf = \bigl( f(\vx_i) \bigr)_{i=1}^n$, although our intuition tells us that it should.  The credible interval for the integral of $47f$ should be $47$ times as wide as the credible interval for the integral of $f$.  
 
 When constructing the confidence interval for the mean of a scalar random variable, $Y$, from independent and identically distributed (IID) data, one must estimate the variance of $Y$ by the sample variance. Analogously, when constructing the credible interval in \eqref{credInt} for the integral (mean) of a function, one must estimate the vertical scale factor inherent in the covariance function $c$.
 
@@ -147,7 +148,7 @@ To increase the possibility that our integrand $f$ lies in the middle of the sam
 \lefteqn{\Prob\Bigl[\bigl \lvert \hat{\Pi}[f] - \Pi[g] \bigr \rvert \le t_{n-1,0.995} \sqrt{\Var_n[\Pi[g]]}  \Bigr] = 99\%.}
 \end{align}
 \end{subequations}
-Here, $\vone$ is a vector of ones, and $t_{n-1,0.995}$ denotes the $99.5\%$ quantile of the Student-t distribution with $n-1$ degrees of freedom.  For large $n$, $t_{n-1,0.995} \approx 2.58$.  The expressions in \eqref{JHFullBayes} are similar to the conclusion of \BOGOS{}, Proposition 2.  The differences are due to the mean of the Gaussian process being left unspecified \JH{}, which reduces the degrees of freedom by one, and adds additional terms to the expressions for $\Ex_n[\hat{\Pi}[g]]$ and $\Var_n[\Pi[g]]$.
+Here, $\vone$ is a vector of ones, and $t_{n-1,0.995}$ denotes the $99.5\%$ quantile of the Student-t distribution with $n-1$ degrees of freedom.  For large $n$, $t_{n-1,0.995} \approx 2.58$.  The expressions in \eqref{JHFullBayes} are similar to the conclusion of \BOGOS{}, Proposition 2.  The differences are due to the mean of the Gaussian process being left unspecified in \JH{}, which reduces the degrees of freedom by one, and adds additional terms to the expressions for $\Ex_n[\hat{\Pi}[g]]$ and $\Var_n[\Pi[g]]$.
 
 Hidden in the definition of $c_0$ is the parameter $\vtheta$. One may place a discrete prior on $\vtheta$, but this strikes us as rather arbitrary.  Thus, in \JH{} we advocate estimating $\vtheta$ by \emph{empirical Bayes}, namely,
 \begin{equation} \label{thetaEB}
@@ -163,11 +164,11 @@ Hidden in the definition of $c_0$ is the parameter $\vtheta$. One may place a di
 
 \JH{} also presents empirical Bayes as an alternative to assuming the improper prior on $(m,\lambda)$, as discussed in \BOGOS{} Section 4.1.3.  Under empirical Bayes the posterior marginal for $\Pi[g]$ has the same mean as for the full Bayes approach, but a somewhat smaller variance.  
 
-\JH{} also discusses the alternative of \emph{generalized cross-validation} for estimating the correct covariance function from the integrand data, as alluded to in Section 4.1.2 of \BOGOS{}.  The formulas for the Bayesian cubature and the credible interval width are significantly different than for full Bayes.
+\JH{} also discusses the alternative of \emph{generalized cross-validation} for estimating the correct covariance function from the integrand data, as alluded to in Section 4.1.2 of \BOGOS{}.  The formulas for the Bayesian cubature and the credible interval width are significantly different than those for full Bayes.
 
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Speeding Up the Computation} \label{sec:Match}
-Computing the estimate of $\vtheta$ in \eqref{thetaEB} and then the credible interval according to \eqref{JHFullBayes} involve matrix inversion and the computing a matrix determinant, which require as much as $\Order(n^3)$ operations.  On the other hand, the computational cost of a obtaining the integrand data, $\vf$, is $\Order(\$(f)n)$, where $\$(f)$ is the computational cost of  a single integrand value.
+Computing the estimate of $\vtheta$ in \eqref{thetaEB} and then the credible interval according to \eqref{JHFullBayes} involve matrix factorization and computing a matrix determinant, which requires as many as $\Order(n^3)$ operations.  On the other hand, the computational cost of obtaining the integrand data, $\vf$, is $\Order(\$(f)n)$, where $\$(f)$ is the computational cost of  a single integrand value.
 
 If $\$(f)$ is extraordinarily large compared to the expected sample size $n$, then the cost of obtaining integrand data dominates, and the $\Order(n^3)$ cost of matrix operations is unimportant.  However, if $\$(f)$ is close to $\Order(1)$, then the cost of matrix operations may make Bayesian cubature prohibitively costly.
 
@@ -209,7 +210,7 @@ The covariance function in \eqref{the_kernel_eqn_bernoulli} is an example of a s
     \centering
     \includegraphics[height = 4.5cm]{ShiftedLatticePoints.eps} \qquad	
     \includegraphics[height = 4.5cm]{"optPrice_guaranteed_time_full_Baker_d12_r1_2018-Sep-6"}
-    \caption{An example of shifted integration lattice nodes in two dimensions (left). The performance of of Bayesian cubature for an option pricing example (right).}
+    \caption{An example of shifted integration lattice nodes in two dimensions (left). The performance of Bayesian cubature for an option pricing example (right).}
     \label{fig:latfig}
 \end{figure}
 
@@ -217,18 +218,18 @@ Under assumptions \eqref{fastcompAssump} one may express \eqref{JHFullBayes} and
 \begin{subequations} \label{JHFullBayesFast}
 \begin{align}
 \label{FastTrans}
-\tvf & : = \vV^{H} \vf, \qquad \vlambda = \diag(\vLambda) = \tilde{\vC}_1 := \vV^{H} \vC_1, \\
+\tvf & : = \vV^{H} \vf, \qquad \vell = \diag(\vLambda) = \tilde{\vC}_1 := \vV^{H} \vC_1, \\
     \hat{\Pi}[f] & =  \Ex_n[\Pi[g]] = \frac 1n \sum_{i=1}^n f(\vx_i) = \frac{\tf_1}{n} \qquad \text{the sample average},\\
-\Var_n[\Pi[g]] & = \frac{1}{n(n-1)} \left(\frac{\lambda_1}{n}  - 1  \right)\sum_{i=2}^n \frac{\bigl \lvert \tf_i\bigr \rvert^2}{\lambda_i} , \\
+\Var_n[\Pi[g]] & = \frac{1}{n(n-1)} \left(\frac{\ell_1}{n}  - 1  \right)\sum_{i=2}^n \frac{\bigl \lvert \tf_i\bigr \rvert^2}{\ell_i} , \\
 \label{thetaEBfast}
 \vtheta_{\textup{EB}} &= 
 \argmin_{\vtheta}
 \left[
 \log\left(
-\sum_{i=2}^n \frac{\abs{\widetilde{y}_i}^2}{\lambda_i}
+\sum_{i=2}^n \frac{\abs{\widetilde{y}_i}^2}{\ell_i}
 \right)  
   + 
-\frac{1}{n}\sum_{i=1}^n \log(\lambda_i)
+\frac{1}{n}\sum_{i=1}^n \log(\ell_i)
 \right].
 \end{align}
 \end{subequations}
@@ -296,7 +297,7 @@ A couple of matters deserve further investigation.  How large a family of covari
 
 The Bayesian approach to numerical integration assumes a Gaussian process.  Do goodness-of-fit statistics confirm or discredit this assumption?  How does the validity of this assumption affect the reliability of the proposed Bayesian automatic cubature?
 
-Finally, probabilistic numerics---including Bayesian cubature---deserves further participation from statisticians, numerical analysts, and software developers alike.  Statisticians and numerical analysts should become more conversant in each other's language and culture.  Computational problems are better understood when one can look from multiple perspectives.  Moreover, the algorithms that arise from probabilistic numerics should find their way into commonly used software libraries.  Such libraries should be built using  software engineering principles that are familiar to software developers, but perhaps not obvious to statisticians.
+Finally, probabilistic numerics---including Bayesian cubature---deserves further participation from statisticians, numerical analysts, and software developers alike.  Statisticians and numerical analysts should become more conversant in each other's language and culture.  Computational problems are better understood when one can look from multiple perspectives.  Moreover, the algorithms that arise from probabilistic numerics should find their way into commonly used software libraries.  Such libraries should be built using  software engineering principles that are familiar to software developers, but perhaps not obvious to statisticians. Our Guaranteed Automatic Integration Library (GAIL) \cite{ChoEtal17b} is an example of such a library.
 
 
 
