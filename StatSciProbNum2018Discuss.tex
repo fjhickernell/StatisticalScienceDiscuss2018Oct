@@ -82,11 +82,11 @@ But, even if $\lVert \mu(\hat{\pi}) - \mu(\pi) \rVert_{\calH}$ can be computed e
 \begin{equation} \label{HJErrCrit}
     \bigl \lvert \hat{\Pi}[f] - \Pi[f] \bigr \rvert \le \varepsilon,
 \end{equation}
-where $\varepsilon$ is the user-specfied absolute error tolerance.  
+where $\varepsilon$ is the user-specified absolute error tolerance.  
 
 We believe that the practitioner would like an automatic cubature, i.e., an algorithm with a stopping criterion that guarantees \eqref{HJErrCrit} (with high probability).  Probabilistic integration, and in particular Bayesian cubature, as espoused in \BOGOS{}, fulfills that wish.  
 
-Bayesian cubature, as explained in \BOGOS{}, assumes that the integrand, $f$, may be modeled by a Gaussian stochastic process, $g \sim \calGP(0,c)$, conditioned on $g$ having the same values as $f$ at the cubature nodes or states, $\{\vx_i\}_{i=1}^n$.  Thus, $\hat{\Pi}[g] = \hat{\Pi}[f]$.  Furthermore, Bayesian cubature is designed to satisfy $\hat{\Pi}[g] = \Ex_n[\Pi[g]]$.  Here, $c$ is the covariance function (or kernel) for $g$.  The definition of $g$ allows us to construct credible intervals for the cubature error via Proposition 1 in  \BOGOS{}, namely
+Bayesian cubature, as explained in \BOGOS{}, assumes that the integrand, $f$, may be modeled by a Gaussian stochastic process, $g \sim \calGP(0,c)$, conditioned on $g$ having the same values as $f$ at the cubature nodes or states, $\{\vx_i\}_{i=1}^n$.  Thus, $\hat{\Pi}[g] = \hat{\Pi}[f]$.  Furthermore, Bayesian cubature is designed to satisfy $\hat{\Pi}[g] = \Ex_n[\Pi[g]]$.  Here, $c$ is the covariance function (or kernel) for $g$.  The definition of $g$ allows us to construct credible intervals for the cubature error via Proposition 1 in  \BOGOS{}, namely,
 \begin{gather}
 \label{credInt}
     \Prob\Bigl[\bigl \lvert \hat{\Pi}[f] - \Pi[g] \bigr \rvert \le 2.58 \sqrt{\Var_n[\Pi[g]]}  \Bigr] = 99\%, \\
@@ -133,7 +133,7 @@ To increase the possibility that our integrand $f$ lies in the middle of the sam
 \frac{  (1 - \vone^T  \vC^{-1}_0\Pi[\vc_0(X,\cdot) ] \vone^T }{ \vone^T  \vC^{-1}_0 \vone}   +  \Pi[\vc_0(\cdot, X)]
 \right)  \vC^{-1}_0 \vf, \\
 \label{eqn:errMLE}
-\Var_n[\Pi[g]] & = \frac{1}{n}
+\Var_n[\Pi[g]] & = \frac{1}{n-1}
  \vf^T \left(  \vC^{-1}_0 - 
 \frac{  \vC^{-1}_0 \vone \vone^T  \vC^{-1}_0 }{\vone^T  \vC^{-1}_0 \vone}
 \right) \vf \\
@@ -233,7 +233,7 @@ Under assumptions \eqref{fastcompAssump} one may express \eqref{JHFullBayes} and
 \right].
 \end{align}
 \end{subequations}
-Apart from the computations in \eqref{FastTrans}, which require $\Order(n \log n)$ operations, all other calcuations in \eqref{JHFullBayesFast} require only $\Order(n)$ operations.  The expression for $\Var_n[\Pi[g]]$ excludes $i=1$ in the sum because we allow $g$ to have an arbitrary constant mean.
+Apart from the computations in \eqref{FastTrans}, which require $\Order(n \log n)$ operations, all other calculations in \eqref{JHFullBayesFast} require only $\Order(n)$ operations.  The expression for $\Var_n[\Pi[g]]$ excludes $i=1$ in the sum because we allow $g$ to have an arbitrary constant mean.
 
 Section 5 of \JH{} presents several numerical experiments for Bayesian cubature with shift-invariant covariance functions and lattice nodes sets.  We reproduce one such experiment in Figure \ref{fig:latfig} (right).  The integrand is the payoff of an arithmetic mean Asian option.  The covariance function is the one given by \eqref{the_kernel_eqn_bernoulli} with $r=1$.  A low degree of smoothness is chosen in view of the discontinuities in the partial derivatives of the integrand.  The value of $\gamma$ is determined by empirical Bayes as in \eqref{thetaEBfast}.  The sample size, $n$, is increased in a sequence of powers of $2$ until the stopping criterion implied by \eqref{BCFullStop}, whose terms are computed quickly via \eqref{JHFullBayesFast}, is satisfied.  Four different values of the tolerance were tried, $\varepsilon = 0.1, 0.01, 0.001,$ and $0.0001$. The aim is for the cubature error, $|\Pi[f] - \hat{\Pi}[f]|$, to be no greater than, but not too much less than, the prescribed tolerance nearly all the time.  In this experiment, the error tolerance is always met.  As expected, the computation time increases as the tolerance decreases.  
 
@@ -295,7 +295,7 @@ Although this inequality is violated for some $f \in \ch$, it holds for those $f
 
 A couple of matters deserve further investigation.  How large a family of covariance functions must be considered for effective Bayesian cubature?  A larger family increases the probability that the integrand in question lies in the middle of the space of Gaussian processes used to determine the stopping criterion.  On the other hand, a larger family may require a more tedious choice of the underlying parameters $\vtheta$.
 
-The Bayesian approach to numerical integration assumes a Gaussian process.  Do goodness-of-fit statistics confirm or discredit this assumption?  How does the validity of this assumption affect the reliability of the proposed Bayesian automatic cubature?
+The Bayesian approach to numerical integration assumes a Gaussian process.  Do goodness-of-fit statistics confirm or discredit this assumption?  How does the validity of this assumption affect the reliability of the proposed Bayesian automatic cubature?  The alternative of Student-$t$ processes has been suggested by \cite{ShaWilGha14a}
 
 Finally, probabilistic numerics---including Bayesian cubature---deserves further participation from statisticians, numerical analysts, and software developers alike.  Statisticians and numerical analysts should become more conversant in each other's language and culture.  Computational problems are better understood when one can look from multiple perspectives.  Moreover, the algorithms that arise from probabilistic numerics should find their way into commonly used software libraries.  Such libraries should be built using  software engineering principles that are familiar to software developers, but perhaps not obvious to statisticians. Our Guaranteed Automatic Integration Library (GAIL) \cite{ChoEtal17b} is an example of such a library.
 
